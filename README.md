@@ -40,4 +40,5 @@ Si deseas contribuir a este proyecto, ¡serás bienvenido! Siéntete libre de ab
 - El archivo de registro `upload.log` se generará automáticamente y almacenará detalles sobre cada respaldo realizado y cualquier error encontrado.
 
 ---
-Hecho con ❤️ y ☕️ por [frubilar](https://github.com/frubilar
+Hecho con ❤️ y ☕️ por [frubilarmorales](https://github.com/frubilarmorales)
+
