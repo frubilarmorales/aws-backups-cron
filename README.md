@@ -39,9 +39,5 @@ Si deseas contribuir a este proyecto, ¡serás bienvenido! Siéntete libre de ab
 - Asegúrate de mantener seguras las credenciales de acceso de AWS y no las compartas en el repositorio.
 - El archivo de registro `upload.log` se generará automáticamente y almacenará detalles sobre cada respaldo realizado y cualquier error encontrado.
 
-## Licencia
-
-Este proyecto está bajo la Licencia [MIT](LICENSE).
-
 ---
-Hecho con ❤️ y ☕️ por [TuNombre](https://github.com/TuNombre)
+Hecho con ❤️ y ☕️ por [frubilar](https://github.com/frubilar
