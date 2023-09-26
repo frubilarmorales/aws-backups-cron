@@ -20,15 +20,21 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^1.9.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
-    "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-express": "^10.2.5",
     "@nestjs/schedule": "^3.0.1",
     "aws-sdk": "^2.1411.0",
     "dotenv": "^16.3.1",
+    "handlebars": "^4.7.8",
+    "hbs": "^4.2.0",
+    "node-unrar": "^0.1.6",
+    "path-posix": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "unrar-js": "^0.2.3"
+    "unrar-js": "^0.2.3",
+    "winston": "^3.10.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

@@ -1,29 +1,18 @@
 import { Controller } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import * as fs from 'fs';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  public backupInterval: any;
-  constructor(private readonly s3Service: AppService) {}
-  @Cron('0 * * * * *') // Ejecutar cada 3 segundos
-  async uploadFiles(): Promise<string> {
-    const backupFolderPath = process.env.FOLDER_BACKUP;
-    const fileNames = fs
-      .readdirSync(backupFolderPath)
-      .filter((fileName) => fileName.endsWith('.rar'));
+  constructor(private readonly appService: AppService) {}
 
-    if (fileNames.length === 0) {
-      console.log('No se obtuvieron archivos');
-      return 'No se obtuvieron archivos';
+  @Cron('0 * * * * *') // Define la expresión cron según tus necesidades
+  async handleCron(): Promise<void> {
+    const result = await this.appService.uploadFilesToS3();
+    if (result.successfulUploads === result.totalFilesToUpload) {
+      console.log('Todos los archivos se cargaron con éxito.');
+    } else {
+      console.log('No se cargaron todos los archivos con éxito.');
     }
-
-    for (const fileName of fileNames) {
-      const filePath = `${backupFolderPath}/${fileName}`;
-      await this.s3Service.uploadFile(filePath, fileName);
-    }
-
-    return 'Respaldo subido exitosamente';
   }
 }

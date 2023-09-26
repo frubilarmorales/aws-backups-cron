@@ -1,44 +1,73 @@
-# API de respaldos con NestJS y AWS S3
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+</p>
 
-![NestJS Logo](https://nestjs.com/img/logo_text.svg)
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-## Descripción
+  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
+    <p align="center">
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
+<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
+<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
+<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
+<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
+<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
+  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
+    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
+  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+</p>
+  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
+  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-Este repositorio contiene una API desarrollada con NestJS que se encarga de realizar respaldos programados y automáticos a AWS S3. La API utiliza un cron job para ejecutar la tarea de subir archivos comprimidos en formato .rar a un bucket de Amazon S3 de forma periódica.
+## Description
 
-## Funcionalidad
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-- Programa una tarea de respaldo cada minuto utilizando un cron job.
-- Explora una carpeta local definida en la configuración para obtener los archivos .rar que serán respaldados.
-- Utiliza las credenciales de acceso de AWS proporcionadas en las variables de entorno para interactuar con el servicio S3 de Amazon.
-- Sube cada archivo de respaldo a un bucket específico en Amazon S3, eliminándolo localmente después de una carga exitosa.
-- Registra los eventos y errores importantes en un archivo de registro (upload.log) para un seguimiento detallado.
+## Installation
 
-## Uso
+```bash
+$ yarn install
+```
 
-1. Asegúrate de tener Node.js y NPM instalados en tu sistema.
-2. Clona este repositorio en tu máquina local.
-3. Instala las dependencias ejecutando `npm install`.
-4. Configura las variables de entorno en un archivo `.env` según el formato proporcionado en el archivo `.env.example`.
-5. Coloca los archivos que deseas respaldar en la carpeta definida en la variable de entorno `FOLDER_BACKUP`.
-6. Ejecuta la API utilizando `npm run start`.
+## Running the app
 
-## Estructura del Proyecto
+```bash
+# development
+$ yarn run start
 
-El repositorio contiene dos componentes principales:
+# watch mode
+$ yarn run start:dev
 
-1. **AppController**: Un controlador NestJS que define la lógica para el cron job y el proceso de subida de archivos a S3.
-2. **AppService**: Un servicio NestJS que se encarga de interactuar con AWS S3 y realizar la subida de los archivos.
+# production mode
+$ yarn run start:prod
+```
 
-## Contribución
+## Test
 
-Si deseas contribuir a este proyecto, ¡serás bienvenido! Siéntete libre de abrir problemas o enviar pull requests.
+```bash
+# unit tests
+$ yarn run test
 
-## Notas
+# e2e tests
+$ yarn run test:e2e
 
-- Asegúrate de mantener seguras las credenciales de acceso de AWS y no las compartas en el repositorio.
-- El archivo de registro `upload.log` se generará automáticamente y almacenará detalles sobre cada respaldo realizado y cualquier error encontrado.
+# test coverage
+$ yarn run test:cov
+```
 
----
-Hecho con ❤️ y ☕️ por [frubilarmorales](https://github.com/frubilarmorales)
+## Support
 
+Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+
+## Stay in touch
+
+- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- Website - [https://nestjs.com](https://nestjs.com/)
+- Twitter - [@nestframework](https://twitter.com/nestframework)
+
+## License
+
+Nest is [MIT licensed](LICENSE).

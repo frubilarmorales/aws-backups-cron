@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respaldo Completado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Respaldo Completado</h1>
+        <p>Los siguientes respaldos se han subido correctamente:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del Respaldo</th>
+                    <th>Tamaño (MB)</th>
+                    <th>Bucket</th>
+                    <th>Estado de Carga</th>
+                    <th>Descargar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each uploadedFilesInfo}}
+                <tr>
+                    <td>{{this.name}}</td>
+                    <td>{{this.size}}</td>
+                    <td>{{this.bucket}}</td>
+                    <td>{{#if this.uploaded}}Subido{{else}}No subido{{/if}}</td>
+                    <td><a href="{{this.url}}" download>Descargar</a></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <p>Total de archivos subidos: {{successfulUploads}} de {{totalFilesToUpload}}</p>
+        <p>Año: {{currentYear}}</p>
+    </div>
+</body>
+</html>
