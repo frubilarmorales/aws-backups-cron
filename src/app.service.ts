@@ -1,83 +1,86 @@
+import { Injectable  } from '@nestjs/common';
+import * as fs from 'fs';
+import * as AWS from 'aws-sdk';
+import * as handlebars from 'handlebars';
+import { MailerService } from '@nestjs-modules/mailer';
+import * as wbm from 'wbm';
 
-          import { Injectable } from '@nestjs/common';
-          import * as fs from 'fs';
-          import * as AWS from 'aws-sdk';
-          import * as handlebars from 'handlebars';
-          import { MailerService } from '@nestjs-modules/mailer';
-          
-          @Injectable()
-          export class AppService {
-            private s3: AWS.S3;
-            totalFilesToUpload: number;
-          
-            constructor(private readonly mailerService: MailerService) {
-              AWS.config.update({
-                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-                region: process.env.AWS_REGION,
-              });
-              this.s3 = new AWS.S3();
-            }
-          
-            async uploadFilesToS3(): Promise<{ successfulUploads: number; totalFilesToUpload: number }> {
-              const backupFolderPath = process.env.FOLDER_BACKUP;
-              const fileNames = fs
-                .readdirSync(backupFolderPath)
-                .filter((fileName) => fileName.endsWith('.rar'));
-          
-              if (fileNames.length === 0) {
-                console.log('No se obtuvieron archivos .rar para cargar.');
-                return {
-                  successfulUploads: 0,
-                  totalFilesToUpload: 0,
-                };
-              }
-          
-              const uploadedFilesInfo: { name: string; bucket: string; url: string; uploaded: boolean; size: number }[] = [];
-              let successfulUploads = 0;
-          
-              for (const fileName of fileNames) {
-                const filePath = `${backupFolderPath}/${fileName}`;
-                const uploadResult: any = await this.uploadFile(filePath, fileName);
-          
-                if (uploadResult) {
-                  successfulUploads++;
-                  const url = this.generateDownloadUrl(process.env.S3_BUCKET, fileName);
-                  // Guardar información del archivo
-                  const fileStats = this.getFileStats(filePath);
-                  uploadedFilesInfo.push({
-                    name: fileName,
-                    size: fileStats ? fileStats.size : 0, // Agregar tamaño del archivo
-                    bucket: process.env.S3_BUCKET,
-                    url,
-                    uploaded: true,
-                  });
-                } else {
-                  // Si el archivo no se subió correctamente, marcarlo como no subido
-                  uploadedFilesInfo.push({
-                    name: fileName,
-                    size: 0, // Tamaño 0 para archivos que no se subieron
-                    bucket: process.env.S3_BUCKET,
-                    url: '',
-                    uploaded: false,
-                  });
-                }
-              }
-          
-              this.totalFilesToUpload = fileNames.length;
-          
-              console.log(`Se cargaron ${successfulUploads} de ${fileNames.length} archivos .rar a Amazon S3.`);
-          
-              // Después de cargar los archivos, enviamos el correo
-              await this.sendUploadCompleteEmail(successfulUploads, uploadedFilesInfo);
-          
-              return {
-                successfulUploads,
-                totalFilesToUpload: fileNames.length,
-              };
-            }
-          
-            async sendUploadCompleteEmail(
+@Injectable()
+export class AppService   {
+  private s3: AWS.S3;
+  totalFilesToUpload: number;
+
+  constructor(private readonly mailerService: MailerService) {
+    AWS.config.update({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: process.env.AWS_REGION,
+    });
+    this.s3 = new AWS.S3();
+  }
+
+  async uploadFilesToS3(): Promise<{ successfulUploads: number; totalFilesToUpload: number }> {
+    const backupFolderPath = process.env.FOLDER_BACKUP;
+    const fileNames = fs
+      .readdirSync(backupFolderPath)
+      .filter((fileName) => fileName.endsWith('.rar'));
+
+    if (fileNames.length === 0) {
+      console.log('No se obtuvieron archivos .rar para cargar.');
+      return {
+        successfulUploads: 0,
+        totalFilesToUpload: 0,
+      };
+    }
+
+   
+
+    const uploadedFilesInfo: { name: string; bucket: string; url: string; uploaded: boolean; size: number }[] = [];
+    let successfulUploads = 0;
+
+    for (const fileName of fileNames) {
+      const filePath = `${backupFolderPath}/${fileName}`;
+      const uploadResult: any = await this.uploadFile(filePath, fileName);
+
+      if (uploadResult) {
+        successfulUploads++;
+        const url = this.generateDownloadUrl(process.env.S3_BUCKET, fileName);
+        // Guardar información del archivo
+        const fileStats = this.getFileStats(filePath);
+        uploadedFilesInfo.push({
+          name: fileName,
+          size: fileStats ? fileStats.size : 0, // Agregar tamaño del archivo
+          bucket: process.env.S3_BUCKET,
+          url,
+          uploaded: true,
+        });
+      } else {
+        // Si el archivo no se subió correctamente, marcarlo como no subido
+        uploadedFilesInfo.push({
+          name: fileName,
+          size: 0, // Tamaño 0 para archivos que no se subieron
+          bucket: process.env.S3_BUCKET,
+          url: '',
+          uploaded: false,
+        });
+      }
+    }
+
+    this.totalFilesToUpload = fileNames.length;
+
+    console.log(`Se cargaron ${successfulUploads} de ${fileNames.length} archivos .rar a Amazon S3.`);
+
+    // Después de cargar los archivos, enviamos el correo
+    await this.sendUploadCompleteEmail(successfulUploads, uploadedFilesInfo);
+
+    return {
+      successfulUploads,
+      totalFilesToUpload: fileNames.length,
+    };
+  }
+
+
+  async sendUploadCompleteEmail(
               successfulUploads: number,
               uploadedFilesInfo: { name: string; bucket: string; url: string; uploaded: boolean }[]
             ): Promise<void> {

@@ -34,7 +34,6 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "unrar-js": "^0.2.3",
-    "wbm": "^1.1.16",
     "winston": "^3.10.0"
   },
   "devDependencies": {
