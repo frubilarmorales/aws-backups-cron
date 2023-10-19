@@ -15,7 +15,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
         port: 465, // Puerto para el envío del correo
         auth: {
           user: process.env.MAILER_AUTH_USER, // Usuario de correo electrónico obtenido desde .env
-          pass: process.env.MAILER_AUTH_PASS,
+          pass:process.env.MAILER_AUTH_PASS,
         },
       },
       defaults: {
