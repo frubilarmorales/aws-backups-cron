@@ -1,7 +1,11 @@
 import * as fs from 'fs';
 import * as AWS from 'aws-sdk';
 
-export function findFilesWithKeywords(directory: string, keywords: string[], extension: string) {
+export function findFilesWithKeywords(
+  directory: string,
+  keywords: string[],
+  extension: string,
+) {
   const fileNames = fs.readdirSync(directory);
 
   return fileNames.filter((fileName) => {
@@ -15,7 +19,7 @@ export function findFilesWithKeywords(directory: string, keywords: string[], ext
 export async function uploadFile(
   filePath: string,
   fileName: string,
-  folderName: string
+  folderName: string,
 ): Promise<void> {
   try {
     if (!fs.existsSync(filePath)) {
@@ -38,13 +42,13 @@ export async function uploadFile(
     if (folderName === 'LAJA') {
       params = {
         Bucket: 'cmpclaja',
-        Key: `2023/LAJA/${fileName}`,
+        Key: `2024/LAJA/${fileName}`,
         Body: fileContent,
       };
     } else if (folderName === 'MULCHEN') {
       params = {
         Bucket: 'cmpclaja',
-        Key: `2023/MULCHEN/${fileName}`,
+        Key: `2024/MULCHEN/${fileName}`,
         Body: fileContent,
       };
     } else {
@@ -56,7 +60,9 @@ export async function uploadFile(
     const response = await s3.putObject(params).promise();
 
     if (response) {
-      console.log(`Archivo ${fileName} subido a la carpeta ${folderName} en S3`);
+      console.log(
+        `Archivo ${fileName} subido a la carpeta ${folderName} en S3`,
+      );
       // Eliminar el archivo local después de la carga exitosa
       fs.unlinkSync(filePath);
     } else {
@@ -64,17 +70,25 @@ export async function uploadFile(
     }
   } catch (error) {
     // Aquí puedes manejar el error de la carga en S3
-    console.error(`Error al cargar el archivo ${fileName} a Amazon S3: ${error.message}`);
+    console.error(
+      `Error al cargar el archivo ${fileName} a Amazon S3: ${error.message}`,
+    );
     // Puedes agregar lógica adicional aquí, como registrar el error o notificarlo.
   }
 }
 
 export async function findAndUploadFiles() {
   const backupFolderPath = process.env.FOLDER_BACKUP;
-  const fileNames = findFilesWithKeywords(backupFolderPath, ['mulchen', 'laja'], '.rar');
+  const fileNames = findFilesWithKeywords(
+    backupFolderPath,
+    ['mulchen', 'laja'],
+    '.rar',
+  );
 
   if (fileNames.length === 0) {
-    console.log('No se obtuvieron archivos con las palabras clave para cargar.');
+    console.log(
+      'No se obtuvieron archivos con las palabras clave para cargar.',
+    );
     return;
   }
 

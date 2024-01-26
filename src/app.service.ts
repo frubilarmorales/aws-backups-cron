@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as AWS from 'aws-sdk';
 import * as handlebars from 'handlebars';
 import { MailerService } from '@nestjs-modules/mailer';
-import { findAndUploadFiles, uploadFile, findFilesWithKeywords } from './utils/utilis.functions';
+import { uploadFile, findFilesWithKeywords } from './utils/utilis.functions';
 
 @Injectable()
 export class AppService {
@@ -19,12 +19,21 @@ export class AppService {
     this.s3 = new AWS.S3();
   }
 
-  async uploadFilesToS3(): Promise<{ successfulUploads: number; totalFilesToUpload: number }> {
+  async uploadFilesToS3(): Promise<{
+    successfulUploads: number;
+    totalFilesToUpload: number;
+  }> {
     const backupFolderPath = process.env.FOLDER_BACKUP;
-    const fileNames: any = findFilesWithKeywords(backupFolderPath, ['mulchen', 'laja'], '.rar');
+    const fileNames: any = findFilesWithKeywords(
+      backupFolderPath,
+      ['mulchen', 'laja'],
+      '.rar',
+    );
 
     if (fileNames.length === 0) {
-      console.log('No se obtuvieron archivos con las palabras clave para cargar.');
+      console.log(
+        'No se obtuvieron archivos con las palabras clave para cargar.',
+      );
       return {
         successfulUploads: 0,
         totalFilesToUpload: 0,
@@ -38,7 +47,7 @@ export class AppService {
       size: number;
     }[] = [];
     let successfulUploads = 0;
-     console.log(fileNames)
+    console.log(fileNames);
     for (const fileName of fileNames) {
       const filePath = `${backupFolderPath}/${fileName}`;
       let folderName = 'otro'; // Carpeta predeterminada
@@ -46,7 +55,15 @@ export class AppService {
       if (fileName.includes('laja')) {
         folderName = 'LAJA';
       } else if (fileName.includes('mulchen')) {
-        folderName = 'MULCHEN';
+        if (fileName.includes('dga')) {
+          folderName = 'MULCHEN/ZEBBRA_DGA';
+        }
+        if (fileName.includes('ZebbraDB')) {
+          folderName = 'MULCHEN/ZEBBRA_SMA';
+        }
+        if (fileName.includes('Maderas')) {
+          folderName = 'MULCHEN/ZEBBRA_MADERAS';
+        }
       }
 
       await uploadFile(filePath, fileName, folderName);
@@ -75,7 +92,9 @@ export class AppService {
 
     this.totalFilesToUpload = fileNames.length;
 
-    console.log(`Se cargaron ${successfulUploads} de ${fileNames.length} archivos .rar a Amazon S3.`);
+    console.log(
+      `Se cargaron ${successfulUploads} de ${fileNames.length} archivos .rar a Amazon S3.`,
+    );
 
     // Después de cargar los archivos, enviamos el correo
     await this.sendUploadCompleteEmail(successfulUploads, uploadedFilesInfo);
@@ -92,7 +111,7 @@ export class AppService {
       name: string;
       bucket: string;
       uploaded: boolean;
-    }[]
+    }[],
   ): Promise<void> {
     try {
       // Cargar la plantilla desde el archivo
@@ -119,7 +138,6 @@ export class AppService {
       console.error('Error al enviar el correo de carga completa:', error);
     }
   }
-
 
   private getFileStats(filePath: string): fs.Stats {
     try {
